@@ -1,0 +1,46 @@
+[
+  {
+    "id": "camp_1791067982400",
+    "name": "New Signature Arrivals & Lookbook",
+    "messageTemplate": "{Hello|Hi|Greetings} {{name}}! 👋\r\nThe latest luxury collection has just arrived at *ELEVATESTORE*! ✨\r\n\r\n👗 Exclusive Designer Dresses & Haute Couture\r\n👔 Tailored Shirts, Polos & Contemporary Denim\r\n👠 Premium Footwear & Boutique Accessories\r\n\r\n🔥 Enjoy an exclusive *15% Welcome Discount* this week!\r\nReply *CATALOG* to view our instant photo lookbook or ask for your size. 🛍️",
+    "mediaUrl": null,
+    "minDelay": 15,
+    "maxDelay": 45,
+    "batchSize": 20,
+    "batchPause": 2,
+    "overrideSafeHours": false,
+    "recipients": [
+      {
+        "phone": "255711472706",
+        "name": "Valued Client"
+      }
+    ],
+    "createdAt": "2026-10-03T22:53:02.400Z",
+    "status": "completed",
+    "logs": [],
+    "sentCount": 1,
+    "failedCount": 0,
+    "updatedAt": "2026-10-03T22:54:56.768Z"
+  },
+  {
+    "id": "camp_1791067692379",
+    "name": "New Signature Arrivals & Lookbook",
+    "messageTemplate": "{Hello|Hi|Greetings} {{name}}! 👋\r\nThe latest luxury collection has just arrived at *ELEVATESTORE*! ✨\r\n\r\n👗 Exclusive Designer Dresses & Haute Couture\r\n👔 Tailored Shirts, Polos & Contemporary Denim\r\n👠 Premium Footwear & Boutique Accessories\r\n\r\n🔥 Enjoy an exclusive *15% Welcome Discount* this week!\r\nReply *CATALOG* to view our instant photo lookbook or ask for your size. 🛍️",
+    "mediaUrl": null,
+    "minDelay": 15,
+    "maxDelay": 45,
+    "batchSize": 20,
+    "batchPause": 2,
+    "overrideSafeHours": false,
+    "recipients": [
+      {
+        "phone": "255711472706",
+        "name": "Valued Client"
+      }
+    ],
+    "createdAt": "2026-10-03T22:48:12.379Z",
+    "status": "stopped",
+    "logs": [],
+    "interrupted": true
+  }
+]

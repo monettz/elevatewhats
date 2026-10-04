@@ -1,0 +1,52 @@
+{
+  "255711472706@s.whatsapp.net": {
+    "jid": "255711472706@s.whatsapp.net",
+    "name": "Valued Client",
+    "unreadCount": 0,
+    "lastMessage": "Aaaah karibu sana",
+    "lastTimestamp": 1791069163059,
+    "messages": [
+      {
+        "id": "3EB0A5D75D1E2BA7E20C8A",
+        "jid": "255711472706@s.whatsapp.net",
+        "phone": "255711472706",
+        "senderName": "You (ELEVATESTORE)",
+        "text": "Greetings Valued Client! 👋\r\nThe latest luxury collection has just arrived at *ELEVATESTORE*! ✨\r\n\r\n👗 Exclusive Designer Dresses & Haute Couture\r\n👔 Tailored Shirts, Polos & Contemporary Denim\r\n👠 Premium Footwear & Boutique Accessories\r\n\r\n🔥 Enjoy an exclusive *15% Welcome Discount* this week!\r\nReply *CATALOG* to view our instant photo lookbook or ask for your size. 🛍️",
+        "fromMe": true,
+        "hasMedia": false,
+        "timestamp": 1791068096760
+      },
+      {
+        "id": "3EB0B1CDB53D1C8F39C5D7",
+        "jid": "255711472706@s.whatsapp.net",
+        "phone": "255711472706",
+        "senderName": "You (ELEVATESTORE)",
+        "text": "Aaaah karibu sana",
+        "fromMe": true,
+        "hasMedia": false,
+        "timestamp": 1791069163059
+      }
+    ],
+    "phone": "255711472706"
+  },
+  "194089907671191@lid": {
+    "jid": "194089907671191@lid",
+    "name": "Poshi😉",
+    "unreadCount": 0,
+    "lastMessage": "umenielewa",
+    "lastTimestamp": 1791024300000,
+    "messages": [
+      {
+        "id": "POSHI_MSG_1",
+        "jid": "194089907671191@lid",
+        "phone": "255621039927",
+        "senderName": "Poshi😉",
+        "text": "umenielewa",
+        "fromMe": false,
+        "hasMedia": false,
+        "timestamp": 1791024300000
+      }
+    ],
+    "phone": "255621039927"
+  }
+}

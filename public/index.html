@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <title>ELEVATESTORE | WhatsApp Marketing & CRM Hub</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6.5 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="css/style.css?v=8">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Minimalist Left Floating Icon Dock Sidebar -->
+        <aside class="sidebar">
+            <a href="#dashboard" class="brand-container" onclick="switchView('dashboard')">
+                <div class="brand-logo-icon">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+            </a>
+
+            <!-- Vertical Navigation Icons -->
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-view="dashboard" data-tooltip="Overview Dashboard">
+                    <i class="fa-solid fa-table-cells-large"></i>
+                </a>
+                <a href="#campaign" class="nav-item" data-view="campaign" data-tooltip="Broadcast Campaigns">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span class="nav-badge-pill pulse" id="campaignRunningBadge" style="display:none;">LIVE</span>
+                </a>
+                <a href="#inbox" class="nav-item" data-view="inbox" data-tooltip="Live Client Messenger">
+                    <i class="fa-solid fa-message"></i>
+                    <span class="nav-badge-pill" id="unreadInboxBadge" style="display:none;">0</span>
+                </a>
+                <a href="#autoreply" class="nav-item" data-view="autoreply" data-tooltip="Auto-Reply Assistant">
+                    <i class="fa-solid fa-robot"></i>
+                </a>
+                <a href="#contacts" class="nav-item" data-view="contacts" data-tooltip="Client Leads & CRM">
+                    <i class="fa-solid fa-users-viewfinder"></i>
+                </a>
+                <a href="#settings" class="nav-item" data-view="settings" data-tooltip="Settings & Safeguards">
+                    <i class="fa-solid fa-sliders"></i>
+                </a>
+            </nav>
+
+            <!-- Dock Bottom Controls -->
+            <div class="sidebar-bottom">
+                <button class="btn-dock-icon" id="btnOpenQrModal" data-tooltip="WhatsApp Session QR" onclick="openQrModal()">
+                    <i class="fa-solid fa-qrcode"></i>
+                </button>
+                <button class="btn-dock-icon" data-tooltip="Anti-Ban Protected">
+                    <i class="fa-solid fa-shield-halved" style="color: var(--accent-lime);"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Floating Dynamic Navigation Bar -->
+            <header class="top-header">
+                <div class="header-left-group">
+                    <div class="brand-title-pill">
+                        <span class="brand-name">ELEVATE<span>STORE</span></span>
+                    </div>
+                    <button class="pill-select-btn" onclick="switchView('dashboard')">
+                        <span id="topBarActiveViewLabel">Overview</span> <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+                    </button>
+                    <button class="pill-select-btn" onclick="switchView('contacts')">
+                        <span>Top Leads</span>
+                    </button>
+                </div>
+
+                <!-- Center Dynamic Notch Island: WhatsApp Live Status -->
+                <div class="dynamic-notch-island" id="dynamicNotchIsland" onclick="openQrModal()" style="cursor: pointer;" data-tooltip="Click to manage WhatsApp connection">
+                    <div class="island-avatar-ring">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <div class="island-info">
+                        <span class="island-title">
+                            <span class="status-dot" id="waStatusDot"></span>
+                            <span id="waStatusText">Connecting...</span>
+                        </span>
+                        <span class="island-subtitle" id="headerUserPhone">+255 664 994 125</span>
+                    </div>
+                    <div class="island-divider"></div>
+                    <div class="island-tag">
+                        <i class="fa-solid fa-shield"></i> Anti-Ban Guard
+                    </div>
+                </div>
+
+                <!-- Right Header Actions -->
+                <div class="header-right-group">
+                    <button class="pill-action-btn" onclick="switchView('inbox')">
+                        <i class="fa-solid fa-inbox"></i> Inbox
+                    </button>
+                    <button class="pill-action-btn primary" onclick="openNewCampaignWizard()">
+                        <i class="fa-solid fa-plus"></i> New Campaign
+                    </button>
+                    <div class="user-profile-capsule" onclick="switchView('settings')">
+                        <div class="user-avatar-pill">ES</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ==========================================
+                 VIEW 1: OVERVIEW DASHBOARD (REFERENCE DESIGN)
+                 ========================================== -->
+            <section class="view-panel active" id="view-dashboard">
+                <!-- Hero Header with Large Typography & Meta Capsules -->
+                <div class="hero-dashboard-header">
+                    <div class="hero-title-area">
+                        <button class="hero-nav-arrow" onclick="switchView('campaign')" title="Go to Campaigns">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <h1 class="hero-title">Client Reach &<br>Conversions</h1>
+                    </div>
+
+                    <div class="hero-meta-capsules">
+                        <div class="meta-capsule-item">
+                            <div class="meta-capsule-icon"><i class="fa-regular fa-calendar"></i></div>
+                            <div class="meta-capsule-text">
+                                <small>Active Session</small>
+                                <strong id="dashCurrentDate">Live Active</strong>
+                            </div>
+                        </div>
+                        <div class="meta-capsule-item">
+                            <div class="meta-capsule-icon"><i class="fa-solid fa-shield-heart text-emerald"></i></div>
+                            <div class="meta-capsule-text">
+                                <small>Status</small>
+                                <strong class="text-emerald" id="dashGuardStatus">Protected</strong>
+                            </div>
+                        </div>
+                        <div class="meta-capsule-item">
+                            <div class="meta-capsule-icon"><i class="fa-solid fa-clock-rotate-left text-gold"></i></div>
+                            <div class="meta-capsule-text">
+                                <small>Safe Delay</small>
+                                <strong id="statAntiBanDelay">15s - 45s</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hero-big-metric">
+                        <span class="metric-currency">#</span>
+                        <span class="metric-value" id="statHeroTotalLeads">0</span>
+                    </div>
+                </div>
+
+                <!-- 4-Capsule Progress Bar Row (Live Data Powered & Clickable) -->
+                <div class="metrics-capsule-row">
+                    <div class="pill-metric-card" onclick="switchView('campaign')" style="cursor: pointer;" title="View Broadcast Campaigns">
+                        <div class="pill-metric-header">
+                            <span class="pill-metric-label">Delivered Today</span>
+                        </div>
+                        <div class="pill-progress-bar lime">
+                            <span>Delivered</span>
+                            <span id="statSentMessages">0 Msgs</span>
+                        </div>
+                    </div>
+
+                    <div class="pill-metric-card" onclick="switchView('inbox')" style="cursor: pointer;" title="View Live Messenger Inbox">
+                        <div class="pill-metric-header">
+                            <span class="pill-metric-label">Client Replies</span>
+                        </div>
+                        <div class="pill-progress-bar amber">
+                            <span>Responses</span>
+                            <span id="statTotalReplies">0 Inquiries</span>
+                        </div>
+                    </div>
+
+                    <div class="pill-metric-card" onclick="switchView('campaign')" style="cursor: pointer;" title="View Campaign Delivery Rate">
+                        <div class="pill-metric-header">
+                            <span class="pill-metric-label">Delivery Rate</span>
+                        </div>
+                        <div class="pill-progress-bar hatch">
+                            <span>Success Rate</span>
+                            <span id="statDeliveryRate">100%</span>
+                        </div>
+                    </div>
+
+                    <div class="pill-metric-card" onclick="switchView('contacts')" style="cursor: pointer;" title="View All CRM Contacts & Leads">
+                        <div class="pill-metric-header">
+                            <span class="pill-metric-label">Total Leads</span>
+                        </div>
+                        <div class="pill-progress-bar lime">
+                            <span>Target Base</span>
+                            <span id="statTotalContacts">0 Leads</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notched Cards Grid: Hero Showcase + Lead Source Matrix -->
+                <div class="dashboard-layout-grid">
+                    <!-- Left Hero Feature Card -->
+                    <div class="notched-card">
+                        <div class="notched-card-header">
+                            <div class="notch-tab-group">
+                                <button class="notch-tab active" onclick="switchView('contacts')" title="View CRM Client Leads">
+                                    New Leads <span class="notch-badge-pill" id="dashNewLeadsBadge">0</span>
+                                </button>
+                                <button class="notch-tab" onclick="switchView('campaign')" title="View Broadcast Campaigns">
+                                    Broadcasts
+                                </button>
+                                <button class="notch-tab" onclick="switchView('inbox')" title="View Hot Inquiries & Chats">
+                                    Hot Leads <span class="notch-badge-pill amber" id="dashHotLeadsBadge">0</span>
+                                </button>
+                            </div>
+                            <button class="btn-dock-icon" onclick="openNewCampaignWizard()" title="Create Campaign">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+
+                        <!-- Card Visual Container -->
+                        <div class="hero-feature-card">
+                            <div class="feature-card-content">
+                                <div class="feature-user-tag">
+                                    <div class="feature-user-avatar">ES</div>
+                                    <span style="font-size: 0.78rem; font-weight: 600; color: #fff;">ELEVATESTORE Marketing</span>
+                                </div>
+                                <h2 class="feature-title-big">Luxury Outreach &<br>Automated Sales</h2>
+                                <p class="feature-subtitle">Safely reach targeted fashion buyers daily with rich lookbooks, spintax anti-spam protection, and 24/7 instant auto-replies.</p>
+                            </div>
+
+                            <div class="feature-bottom-row">
+                                <div class="slider-dots-indicator">
+                                    <span class="active-step">1</span>/3
+                                    <div class="slider-line-bar"></div>
+                                </div>
+                                <button class="floating-feature-pill" onclick="switchView('campaign')">
+                                    <i class="fa-solid fa-rocket"></i> Launch Broadcast
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Lead Source & Metric Card -->
+                    <div class="notched-card">
+                        <div class="notched-card-header">
+                            <div class="notch-tab-group">
+                                <button class="notch-tab active" onclick="switchView('contacts')" title="Open CRM Leads Database">
+                                    Lead Source <span class="notch-badge-pill">Live</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="lead-source-metric-box">
+                            <div class="lead-source-big-row" onclick="switchView('contacts')" style="cursor: pointer;" title="Click to view all leads in CRM">
+                                <div class="lead-source-count" id="dashLeadsCount">
+                                    0 <span>/active contacts</span>
+                                </div>
+                                <span class="metric-growth-pill" id="dashGrowthIndicator">
+                                    <i class="fa-solid fa-users"></i> Live Leads
+                                </span>
+                            </div>
+
+                            <!-- Segmented Bar -->
+                            <div class="segmented-pill-bar">
+                                <div class="segment-fill primary" title="Excel Imports"></div>
+                                <div class="segment-fill secondary" title="Direct Inquiries"></div>
+                                <div class="segment-fill muted" title="Manual Entry"></div>
+                            </div>
+                            <div class="lead-category-tags">
+                                <span>Excel / CSV</span>
+                                <span>WhatsApp Inquiries</span>
+                                <span>Store CRM</span>
+                            </div>
+
+                            <!-- Client Contact Pill List (Dynamically Populated from Real Chats) -->
+                            <div class="client-pill-list" id="dashboardRecentChats">
+                                <div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 0.82rem;">
+                                    No incoming customer inquiries recorded yet.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Past Campaigns Table Container -->
+                <div class="notched-card">
+                    <div class="notched-card-header">
+                        <div class="notch-tab-group">
+                            <button class="notch-tab active">
+                                <i class="fa-solid fa-clock-rotate-left"></i> Recent Campaigns
+                            </button>
+                        </div>
+                        <button class="pill-action-btn" onclick="switchView('campaign')">View All Broadcasts</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="modern-table">
+                            <thead>
+                                <tr>
+                                    <th>Campaign Name</th>
+                                    <th>Target Contacts</th>
+                                    <th>Delivered</th>
+                                    <th>Status</th>
+                                    <th>Created Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboardCampaignsTable">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">No past campaigns found. Click "New Campaign" to launch one!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 VIEW 2: CAMPAIGNS & BROADCASTS
+                 ========================================== -->
+            <section class="view-panel" id="view-campaign">
+                <!-- Running Campaign Live Monitor -->
+                <div class="notched-card live-campaign-monitor" id="liveCampaignCard" style="display:none;">
+                    <div class="monitor-header">
+                        <div class="monitor-title">
+                            <span class="live-pulse"></span>
+                            <div>
+                                <h3 id="liveCampName" style="color: #fff; font-size: 1.15rem; font-weight: 700;">Broadcast Campaign Active</h3>
+                                <p id="liveCampStatus" style="color: var(--text-secondary); font-size: 0.8rem;">Dispatching personalized messages safely to clients...</p>
+                            </div>
+                        </div>
+                        <div class="header-right-group">
+                            <button class="btn btn-warning btn-sm" id="btnPauseCamp" onclick="pauseActiveCampaign()">
+                                <i class="fa-solid fa-pause"></i> Pause
+                            </button>
+                            <button class="btn btn-success btn-sm" id="btnResumeCamp" onclick="resumeActiveCampaign()" style="display:none;">
+                                <i class="fa-solid fa-play"></i> Resume
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="stopActiveCampaign()">
+                                <i class="fa-solid fa-stop"></i> Stop
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Safe Hours Night Hold Banner -->
+                    <div id="liveSafeHoursAlert" class="safe-hours-alert-banner" style="display: none; margin: 12px 0;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="fa-solid fa-moon" style="font-size: 1.3rem; color: var(--accent-amber);"></i>
+                            <div>
+                                <strong style="color: #fff; font-size: 0.88rem;">Safe Hours Guard Active (Night Mode)</strong>
+                                <p style="font-size: 0.76rem; color: var(--text-secondary); margin: 0;">Broadcast is resting safely to avoid spam flags. Auto-resumes at <strong id="liveResumeTimeLabel" style="color: var(--accent-lime);">08:00 AM</strong>.</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-warning btn-sm" onclick="resumeActiveCampaign()" title="Override sleep hold"><i class="fa-solid fa-bolt"></i> Send Now</button>
+                    </div>
+
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar-fill" id="liveCampProgressFill" style="width: 0%;"></div>
+                    </div>
+
+                    <div class="monitor-stats-row">
+                        <div class="m-stat">
+                            <span class="lbl">Total Targets:</span>
+                            <strong id="liveTotalCount">0</strong>
+                        </div>
+                        <div class="m-stat">
+                            <span class="lbl">Delivered:</span>
+                            <strong style="color: var(--accent-lime);" id="liveSentCount">0</strong>
+                        </div>
+                        <div class="m-stat">
+                            <span class="lbl">Failed:</span>
+                            <strong style="color: #ef4444;" id="liveFailedCount">0</strong>
+                        </div>
+                        <div class="m-stat">
+                            <span class="lbl">Next Dispatch In:</span>
+                            <strong style="color: var(--accent-amber);" id="liveDelayCountdown">0s</strong>
+                        </div>
+                    </div>
+
+                    <!-- Live Real-Time Logs Console -->
+                    <div class="live-log-console">
+                        <div class="console-header">
+                            <span><i class="fa-solid fa-terminal"></i> Live Broadcast Activity Stream</span>
+                            <button class="btn-clear-logs" onclick="clearLiveLogs()"><i class="fa-solid fa-trash"></i> Clear</button>
+                        </div>
+                        <div class="console-body" id="liveLogBody"></div>
+                    </div>
+                </div>
+
+                <!-- Campaign Builder Card -->
+                <div class="notched-card" id="campaignBuilderCard">
+                    <div class="notched-card-header">
+                        <div class="notch-tab-group">
+                            <button class="notch-tab active">
+                                <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-lime);"></i> Create Broadcast Campaign
+                            </button>
+                        </div>
+                        <span class="island-tag"><i class="fa-solid fa-shield"></i> Anti-Ban Safe Delay Active</span>
+                    </div>
+
+                    <!-- Quick Preset Templates -->
+                    <div class="template-presets-bar">
+                        <span class="preset-label">Templates:</span>
+                        <button type="button" class="btn-preset" onclick="loadTemplatePreset('new_arrivals')">✨ New Arrivals & Lookbook</button>
+                        <button type="button" class="btn-preset" onclick="loadTemplatePreset('weekend_sale')">🔥 Weekend Exclusive Sale</button>
+                        <button type="button" class="btn-preset" onclick="loadTemplatePreset('vip_invitation')">👑 VIP Client Invitation</button>
+                        <button type="button" class="btn-preset" onclick="loadTemplatePreset('follow_up')">💬 Order & Sizing Follow-Up</button>
+                    </div>
+
+                    <form id="campaignForm" onsubmit="handleStartCampaign(event)">
+                        <div class="form-grid">
+                            <!-- Left Column: Settings & Audience -->
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label>Campaign Title:</label>
+                                    <input type="text" id="campName" class="form-control" placeholder="e.g. Weekend Flash Sale & Lookbook" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Target Audience:</label>
+                                    <div class="recipients-method-tabs">
+                                        <button type="button" class="tab-btn active" onclick="setRecipientMode('file')">
+                                            <i class="fa-solid fa-file-excel"></i> Upload Excel / CSV
+                                        </button>
+                                        <button type="button" class="tab-btn" onclick="setRecipientMode('text')">
+                                            <i class="fa-solid fa-keyboard"></i> Paste Numbers
+                                        </button>
+                                        <button type="button" class="tab-btn" onclick="setRecipientMode('saved')">
+                                            <i class="fa-solid fa-address-book"></i> Saved CRM Leads
+                                        </button>
+                                    </div>
+
+                                    <!-- Mode 1: File Drop -->
+                                    <div class="recipient-input-area" id="recipModeFile">
+                                        <div class="drop-zone" id="fileDropZone">
+                                            <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+                                            <p>Drag & drop or click to upload <strong>Excel (.xlsx) or CSV</strong> file</p>
+                                            <small style="color: var(--text-muted);">Supports Tanzanian & International formats (07XXXXXXXX, 255XXXXXXXXX)</small>
+                                            <input type="file" id="contactsFileInput" accept=".csv, .xlsx, .xls, .txt" style="display: none;" onchange="handleFileUpload(this)">
+                                        </div>
+                                        <div id="fileUploadStatus" class="upload-status-info" style="display:none; margin-top: 10px; color: var(--accent-lime);"></div>
+                                    </div>
+
+                                    <!-- Mode 2: Manual Text Input -->
+                                    <div class="recipient-input-area" id="recipModeText" style="display:none;">
+                                        <textarea id="manualRecipientsInput" class="form-control" rows="4" placeholder="Enter numbers (one per line):
+0754123456, Victoria
+0765987654, Alexander
+255689112233, Sarah" oninput="parseManualRecipients(true)"></textarea>
+                                        <button type="button" class="btn btn-secondary btn-sm" style="margin-top: 8px;" onclick="parseManualRecipients()">
+                                            <i class="fa-solid fa-check"></i> Validate Numbers
+                                        </button>
+                                    </div>
+
+                                    <!-- Mode 3: Saved CRM Leads -->
+                                    <div class="recipient-input-area" id="recipModeSaved" style="display:none;">
+                                        <p style="color: var(--text-secondary); margin-bottom: 10px;">You have <strong id="savedLeadsCount" style="color: var(--accent-lime);">0</strong> contacts saved in your database.</p>
+                                        <button type="button" class="btn btn-secondary btn-sm" onclick="useAllSavedContacts()">
+                                            <i class="fa-solid fa-users"></i> Target All Saved Leads
+                                        </button>
+                                    </div>
+
+                                    <div class="parsed-recipients-summary" id="recipientsSummaryBox" style="display:none; margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                                        <span class="status-pill success"><i class="fa-solid fa-circle-check"></i> <strong id="validRecipientsCount">0</strong> Numbers Ready</span>
+                                        <button type="button" class="btn-text-danger" onclick="clearRecipients()"><i class="fa-solid fa-xmark"></i> Clear</button>
+                                    </div>
+                                </div>
+
+                                <!-- Anti-Ban Safeguards Box -->
+                                <div class="sub-card">
+                                    <h4 style="font-size: 0.82rem; color: #fff; margin-bottom: 10px;"><i class="fa-solid fa-shield-cat" style="color: var(--accent-lime);"></i> Anti-Ban Throttling Parameters</h4>
+                                    <div class="range-grid">
+                                        <div class="range-item">
+                                            <label>Min Delay: <strong id="valMinDelay" style="color: var(--accent-lime);">15</strong>s</label>
+                                            <input type="range" id="inputMinDelay" min="10" max="60" value="15" oninput="document.getElementById('valMinDelay').innerText=this.value">
+                                        </div>
+                                        <div class="range-item">
+                                            <label>Max Delay: <strong id="valMaxDelay" style="color: var(--accent-lime);">45</strong>s</label>
+                                            <input type="range" id="inputMaxDelay" min="20" max="120" value="45" oninput="document.getElementById('valMaxDelay').innerText=this.value">
+                                        </div>
+                                    </div>
+                                    <div class="range-grid" style="margin-top: 12px;">
+                                        <div class="range-item">
+                                            <label>Batch Size (messages):</label>
+                                            <input type="number" id="inputBatchSize" class="form-control" value="20" min="5" max="100">
+                                        </div>
+                                        <div class="range-item">
+                                            <label>Cooldown (minutes):</label>
+                                            <input type="number" id="inputBatchPause" class="form-control" value="2" min="1" max="10">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Message & Media -->
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <div class="label-with-tags">
+                                        <label>Broadcast Message:</label>
+                                        <div class="quick-tags">
+                                            <button type="button" class="tag-insert" onclick="insertVariable('{{name}}')">+ {{name}}</button>
+                                            <button type="button" class="tag-insert" onclick="insertVariable('{{phone}}')">+ {{phone}}</button>
+                                            <button type="button" class="tag-insert" onclick="insertVariable('{{store_name}}')">+ {{store_name}}</button>
+                                            <button type="button" class="tag-insert spintax" onclick="insertSpintax()">+ {A|B|C}</button>
+                                        </div>
+                                    </div>
+                                    <textarea id="campMessageText" class="form-control" rows="8" placeholder="Type your personalized message..." oninput="onCampaignMessageInput()" required></textarea>
+                                </div>
+
+                                <!-- Spintax Anti-Ban Variations Bar -->
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: -8px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                                    <div class="spintax-pill-count" id="spintaxVariationsPill">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                        <span><strong id="spintaxVariationsCount">1</strong> unique variations</span>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="previewSpintaxSamples()" id="btnPreviewSpintax">
+                                        <i class="fa-solid fa-dice"></i> Test Variations
+                                    </button>
+                                </div>
+
+                                <!-- Spintax Samples Tray (Collapsible) -->
+                                <div class="spintax-preview-tray" id="spintaxSamplesTray" style="display:none;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                        <small style="color: var(--accent-lime); font-weight: 700;"><i class="fa-solid fa-shuffle"></i> Generated Dynamic Sample Outputs:</small>
+                                        <button type="button" class="btn-text-danger" style="font-size: 0.72rem;" onclick="closeSpintaxSamples()"><i class="fa-solid fa-xmark"></i> Close</button>
+                                    </div>
+                                    <div id="spintaxSamplesList"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Lookbook / Picture Attachment (Optional):</label>
+                                    <input type="file" id="campMediaFile" accept="image/*,video/*" class="form-control" onchange="previewMedia(this)">
+                                    <div id="mediaPreviewBox" style="display:none; margin-top: 10px; position: relative; max-width: 140px;">
+                                        <img id="mediaPreviewImg" src="" alt="Lookbook Preview" style="width: 100%; border-radius: 8px;">
+                                        <button type="button" class="btn-text-danger" style="margin-top: 4px;" onclick="removeMedia()"><i class="fa-solid fa-trash"></i> Remove</button>
+                                    </div>
+                                </div>
+
+                                <!-- Live Message Preview -->
+                                <div class="preview-bubble-card">
+                                    <div class="bubble-header"><i class="fa-brands fa-whatsapp text-emerald"></i> Client Perspective Preview:</div>
+                                    <div class="wa-chat-bubble" id="liveMsgPreview">
+                                        Hello Victoria! Welcome to ELEVATESTORE...
+                                    </div>
+                                </div>
+
+                                <!-- Safe Hours Notice / Override Checkbox -->
+                                <div id="campSafeHoursNotice" class="alert-box-warning" style="display: none; margin-top: 14px;">
+                                    <div style="display: flex; align-items: flex-start; gap: 8px;">
+                                        <i class="fa-solid fa-moon" style="font-size: 1.1rem; margin-top: 2px;"></i>
+                                        <div>
+                                            <strong>Safe Marketing Hours Guard Active:</strong>
+                                            <p style="margin: 2px 0 6px 0;">Currently outside safe window (<span id="campSafeHoursWindowLabel">08:00 - 21:00</span>). If started now, messages will queue until tomorrow morning to prevent spam reports.</p>
+                                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #fff; font-weight: 600;">
+                                                <input type="checkbox" id="checkOverrideSafeHours" style="accent-color: var(--accent-lime); width: 16px; height: 16px;">
+                                                Override Safe Hours & dispatch immediately tonight
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: 18px;">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block" id="btnSubmitCampaign">
+                                        <i class="fa-solid fa-paper-plane"></i> Launch Broadcast Campaign Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 VIEW 3: LIVE MESSENGER / INBOX
+                 ========================================== -->
+            <section class="view-panel" id="view-inbox">
+                <div class="chat-app-container">
+                    <!-- Conversations Sidebar -->
+                    <div class="chat-list-sidebar">
+                        <div class="chat-sidebar-header">
+                            <div class="chat-search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="chatSearchInput" placeholder="Search client name or phone..." oninput="filterChatList()">
+                            </div>
+                            <!-- Filter pills & Clear All -->
+                            <div class="chat-filter-pills" style="display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; gap: 6px;">
+                                    <button type="button" class="chat-filter-pill active" onclick="setInboxFilter('all')">All Chats</button>
+                                    <button type="button" class="chat-filter-pill" onclick="setInboxFilter('unread')">Unread</button>
+                                    <button type="button" class="chat-filter-pill" onclick="setInboxFilter('hot')">🔥 Leads</button>
+                                </div>
+                                <button type="button" class="btn-text-danger" style="font-size: 0.7rem;" onclick="confirmClearAllChats()" title="Clear all conversation history">
+                                    <i class="fa-solid fa-trash"></i> Clear All
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="conversations-wrapper" id="conversationsContainer">
+                            <div style="padding: 32px 16px; text-align: center; color: var(--text-muted); font-size: 0.82rem;">
+                                <i class="fa-regular fa-comments" style="font-size: 2rem; margin-bottom: 10px; color: var(--text-muted); opacity: 0.5;"></i>
+                                <p>No client chats yet.<br>When customers reply to your broadcasts, they will appear here live.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Chat Area -->
+                    <div class="chat-window-area" id="chatWindowArea">
+                        <div class="empty-chat-selected" id="emptyChatPlaceholder">
+                            <div class="empty-content">
+                                <div class="empty-icon-shield">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </div>
+                                <h3 style="color: #fff; font-family: var(--font-heading); font-size: 1.25rem; margin-bottom: 6px;">ELEVATESTORE Direct Messenger</h3>
+                                <p style="color: var(--text-secondary); font-size: 0.84rem; max-width: 380px; line-height: 1.5;">Select a client conversation from the left to provide instant stylist support, send clothing lookbooks, and close sales.</p>
+                            </div>
+                        </div>
+
+                        <div class="active-chat-content" id="activeChatContent" style="display:none; height: 100%; display: flex; flex-direction: column;">
+                            <!-- Chat Top Bar -->
+                            <div class="chat-header-bar">
+                                <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+                                    <button class="mobile-chat-back-btn" id="btnMobileBackToChats" onclick="closeMobileChat()" title="Back to chats">
+                                        <i class="fa-solid fa-arrow-left"></i>
+                                    </button>
+                                    <div class="client-avatar" id="activeChatAvatar">C</div>
+                                    <div class="client-info" style="min-width: 0;">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <h4 id="activeChatName" style="color: #fff; font-size: 0.95rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Client Name</h4>
+                                            <span class="status-dot" style="width: 6px; height: 6px; flex-shrink: 0;" title="Online via WhatsApp"></span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                                            <small id="activeChatPhone" style="color: var(--text-muted); font-family: var(--font-mono); font-size: 0.75rem;">+255 XXX XXX XXX</small>
+                                            <span class="chip-status-tag" id="activeChatStatusTag">Active Lead</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 6px; flex-shrink: 0;">
+                                    <button class="action-circle-btn" title="Edit Contact Name & Phone" onclick="openEditActiveContactModal()">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                    <button class="action-circle-btn" title="Save to CRM Leads" onclick="saveActiveContact()">
+                                        <i class="fa-solid fa-user-plus"></i>
+                                    </button>
+                                    <button class="action-circle-btn danger" title="Delete this conversation" onclick="confirmDeleteActiveChat()" style="color: #f87171;">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Chat Messages Stream -->
+                            <div class="chat-messages-body" id="chatMessagesBody"></div>
+
+                            <!-- Quick Reply Capsule Pills -->
+                            <div class="quick-reply-bar">
+                                <span class="quick-reply-label"><i class="fa-solid fa-bolt"></i> Quick Replies:</span>
+                                <button class="quick-pill" onclick="sendQuickText('Hello! Yes, that item is currently in stock at ELEVATESTORE in all standard sizes.')">✨ In Stock</button>
+                                <button class="quick-pill" onclick="sendQuickText('Our collection pricing ranges from Tsh 25,000 to 80,000 depending on the bespoke material.')">🏷️ Price Range</button>
+                                <button class="quick-pill" onclick="sendQuickText('We offer express door-to-door delivery across all regions with rapid courier dispatch.')">🚚 Delivery Info</button>
+                                <button class="quick-pill" onclick="sendQuickText('Which size would you like us to reserve for you (S, M, L, XL, XXL)?')">👗 Size Check</button>
+                            </div>
+
+                            <!-- Chat Input Bar -->
+                            <div class="chat-input-container">
+                                <label for="chatMediaInput" class="btn-attach" title="Attach Lookbook Photo">
+                                    <i class="fa-solid fa-paperclip"></i>
+                                </label>
+                                <input type="file" id="chatMediaInput" accept="image/*,video/*" style="display:none;" onchange="handleChatMediaSelect(this)">
+                                
+                                <div class="input-preview-holder" id="chatMediaPreview" style="display:none;">
+                                    <i class="fa-solid fa-image"></i>
+                                    <span id="chatMediaFileName">photo.jpg</span>
+                                    <button type="button" onclick="cancelChatMedia()"><i class="fa-solid fa-xmark"></i></button>
+                                </div>
+
+                                <textarea id="chatTextInput" class="chat-textarea" placeholder="Type a message to client..." rows="1" onkeydown="handleChatKeyPress(event)"></textarea>
+                                
+                                <button class="btn-send-message" id="btnSendChatMsg" onclick="sendActiveChatMessage()" title="Send message (Enter)">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 VIEW 4: AUTO-REPLY ASSISTANT
+                 ========================================== -->
+            <section class="view-panel" id="view-autoreply">
+                <div class="luxury-view-header">
+                    <div>
+                        <h2 class="luxury-view-title"><i class="fa-solid fa-robot text-emerald"></i> Automated Response Studio</h2>
+                        <p class="luxury-view-subtitle">Define intelligent keyword triggers and instant lookbook responses for 24/7 customer engagement.</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <div class="master-toggle-capsule">
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #fff;">Auto-Reply Bot:</span>
+                            <label class="switch">
+                                <input type="checkbox" id="toggleAutoReplyMaster" checked onchange="toggleAutoReplyMaster(this.checked)">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <button class="pill-action-btn primary" onclick="openNewRuleModal()">
+                            <i class="fa-solid fa-plus"></i> Add New Rule
+                        </button>
+                    </div>
+                </div>
+
+                <div class="rules-grid" id="autoRepliesGrid"></div>
+            </section>
+
+            <!-- ==========================================
+                 VIEW 5: CLIENT LEADS & CRM
+                 ========================================== -->
+            <section class="view-panel" id="view-contacts">
+                <!-- CRM Metrics Ribbon -->
+                <div class="crm-metrics-ribbon">
+                    <div class="crm-ribbon-card">
+                        <div class="ribbon-icon lime"><i class="fa-solid fa-users"></i></div>
+                        <div>
+                            <span class="ribbon-lbl">Total Client Leads</span>
+                            <strong class="ribbon-val" id="crmTotalCount">0</strong>
+                        </div>
+                    </div>
+                    <div class="crm-ribbon-card">
+                        <div class="ribbon-icon amber"><i class="fa-solid fa-fire"></i></div>
+                        <div>
+                            <span class="ribbon-lbl">Replied Inquiries</span>
+                            <strong class="ribbon-val" id="crmRepliedCount">0</strong>
+                        </div>
+                    </div>
+                    <div class="crm-ribbon-card">
+                        <div class="ribbon-icon emerald"><i class="fa-solid fa-paper-plane"></i></div>
+                        <div>
+                            <span class="ribbon-lbl">Broadcast Reach</span>
+                            <strong class="ribbon-val" id="crmContactedCount">0</strong>
+                        </div>
+                    </div>
+                    <div class="crm-ribbon-card">
+                        <div class="ribbon-icon muted"><i class="fa-solid fa-user-slash"></i></div>
+                        <div>
+                            <span class="ribbon-lbl">Opted Out (Safe)</span>
+                            <strong class="ribbon-val" id="crmOptOutCount">0</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="luxury-card">
+                    <div class="crm-toolbar-row">
+                        <div class="chat-search-box" style="margin-bottom: 0; min-width: 280px; flex: 1;">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="contactFilterInput" placeholder="Filter leads by name, phone, or tags..." oninput="renderContactsTable()">
+                        </div>
+
+                        <div class="crm-filter-chips">
+                            <button type="button" class="crm-chip active" onclick="setContactStatusFilter('all')">All Leads</button>
+                            <button type="button" class="crm-chip" onclick="setContactStatusFilter('replied')">💬 Replied</button>
+                            <button type="button" class="crm-chip" onclick="setContactStatusFilter('saved')">⭐ Saved CRM</button>
+                            <button type="button" class="crm-chip" onclick="setContactStatusFilter('opted_out')">Opted Out</button>
+                        </div>
+
+                        <div class="crm-action-group">
+                            <button class="pill-action-btn" onclick="exportContactsCSV()" title="Export all contacts to CSV format">
+                                <i class="fa-solid fa-download"></i> Export CSV
+                            </button>
+                            <button class="pill-action-btn primary" onclick="openAddContactModal()">
+                                <i class="fa-solid fa-user-plus"></i> Add Lead
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="modern-table">
+                            <thead>
+                                <tr>
+                                    <th>Client Contact</th>
+                                    <th>WhatsApp Number</th>
+                                    <th>Lead Status</th>
+                                    <th>Source / Campaign</th>
+                                    <th>Date Added</th>
+                                    <th style="text-align: right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contactsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 VIEW 6: SETTINGS & SAFEGUARDS
+                 ========================================== -->
+            <section class="view-panel" id="view-settings">
+                <div class="luxury-view-header">
+                    <div>
+                        <h2 class="luxury-view-title"><i class="fa-solid fa-sliders text-emerald"></i> System Safeguards & Brand Settings</h2>
+                        <p class="luxury-view-subtitle">Configure business identity, anti-ban protections, and delivery throttling parameters.</p>
+                    </div>
+                </div>
+
+                <form onsubmit="handleSaveSettings(event)">
+                    <div class="form-grid">
+                        <!-- Left: Store Identity & Notifications -->
+                        <div class="form-col">
+                            <div class="luxury-card">
+                                <div class="card-section-title">
+                                    <i class="fa-solid fa-crown text-gold"></i>
+                                    <span>Brand Identity & Notifications</span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Store Brand Name:</label>
+                                    <input type="text" id="settingStoreName" class="form-control" value="ELEVATESTORE">
+                                    <small style="color: var(--text-muted); font-size: 0.72rem;">Appears automatically in template tokens like {{store_name}}.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Official Store Contact Phone:</label>
+                                    <input type="text" id="settingPhone" class="form-control" placeholder="+255 7XX XXX XXX">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label>Audio Notification Chime:</label>
+                                    <select id="settingSound" class="form-control">
+                                        <option value="true">🔔 Enabled (Chime alert on new incoming client messages)</option>
+                                        <option value="false">🔕 Muted</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Anti-Ban & Safeguards Studio -->
+                        <div class="form-col">
+                            <div class="luxury-card">
+                                <div class="card-section-title">
+                                    <i class="fa-solid fa-shield-halved text-emerald"></i>
+                                    <span>Anti-Ban Safeguards Studio</span>
+                                </div>
+
+                                <!-- Safe Marketing Hours -->
+                                <div class="safeguard-sub-panel">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <i class="fa-solid fa-moon text-gold"></i>
+                                            <strong style="color: #fff; font-size: 0.86rem;">Safe Marketing Hours Guard</strong>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" id="settingSafeHoursEnabled" checked onchange="updateSafeHoursSettingsStatus()">
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                    <p style="color: var(--text-secondary); font-size: 0.74rem; margin-bottom: 12px; line-height: 1.4;">Automatically queues outgoing campaigns during night hours to prevent spam reports from sleeping clients.</p>
+                                    
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.74rem;">Start Window (Morning):</label>
+                                            <input type="time" id="settingSafeHoursStart" class="form-control" value="08:00" onchange="updateSafeHoursSettingsStatus()">
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.74rem;">End Window (Night):</label>
+                                            <input type="time" id="settingSafeHoursEnd" class="form-control" value="21:00" onchange="updateSafeHoursSettingsStatus()">
+                                        </div>
+                                    </div>
+                                    <div id="settingsSafeHoursStatusBadge" style="margin-top: 8px;"></div>
+                                </div>
+
+                                <!-- Typing Presence Simulation -->
+                                <div class="safeguard-sub-panel" style="margin-top: 14px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <i class="fa-solid fa-keyboard text-emerald"></i>
+                                            <strong style="color: #fff; font-size: 0.86rem;">Human Typing Simulation</strong>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" id="settingSimulateTyping" checked>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                    <p style="color: var(--text-secondary); font-size: 0.74rem; margin-bottom: 10px; line-height: 1.4;">Emits realistic WhatsApp 'composing / typing' presence pulses before dispatching messages.</p>
+                                    
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label style="font-size: 0.74rem;">Typing Speed Cadence: <strong id="lblTypingSpeed" style="color: var(--accent-lime);">35</strong> chars/sec</label>
+                                        <input type="range" id="settingTypingSpeed" min="20" max="60" value="35" class="form-control" oninput="document.getElementById('lblTypingSpeed').innerText=this.value">
+                                    </div>
+                                </div>
+
+                                <!-- Throttling Defaults -->
+                                <div class="safeguard-sub-panel" style="margin-top: 14px;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                        <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-lime);"></i>
+                                        <strong style="color: #fff; font-size: 0.86rem;">Anti-Ban Throttling Parameters</strong>
+                                    </div>
+                                    <p style="color: var(--text-secondary); font-size: 0.74rem; margin-bottom: 10px;">Variable jitter intervals between outbound dispatches.</p>
+                                    
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.74rem;">Default Min Delay (Seconds):</label>
+                                            <input type="number" id="settingMinDelay" class="form-control" value="15" min="10" max="60">
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.74rem;">Default Max Delay (Seconds):</label>
+                                            <input type="number" id="settingMaxDelay" class="form-control" value="45" min="20" max="120">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: 20px;">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                        <i class="fa-solid fa-floppy-disk"></i> Save Configuration & Safeguards
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <!-- ==========================================
+         MODALS: QR SCANNER, RULES, CONTACTS
+         ========================================== -->
+    <!-- MODAL: WhatsApp QR Code Scanner -->
+    <div class="modal-overlay" id="qrModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-brands fa-whatsapp text-emerald"></i> WhatsApp Session Connect</h3>
+                <button class="btn-close-modal" onclick="closeQrModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <div id="qrLoadingSpinner" class="qr-spinner">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 12px;">Generating secure QR session code...</p>
+                </div>
+
+                <div id="qrImageContainer" style="display:none;">
+                    <div class="qr-frame">
+                        <img id="qrImageElement" src="" alt="Scan QR Code">
+                    </div>
+                    <ol class="qr-instructions">
+                        <li>Open <strong>WhatsApp</strong> on your mobile phone.</li>
+                        <li>Tap menu (⋮) or Settings > <strong>Linked Devices</strong>.</li>
+                        <li>Tap <strong>Link a Device</strong> and point your camera here.</li>
+                    </ol>
+                </div>
+
+                <div id="qrConnectedState" style="display:none;">
+                    <i class="fa-solid fa-circle-check" style="font-size: 3.2rem; color: var(--accent-lime); margin-bottom: 12px;"></i>
+                    <h3 style="color: #fff; font-family: var(--font-heading); margin-bottom: 6px;">WhatsApp Connected!</h3>
+                    <p id="connectedUserMeta" style="color: var(--text-secondary); font-size: 0.85rem;">Ready to send campaigns and reply to customer inquiries.</p>
+                    <button class="btn btn-danger btn-sm" style="margin-top: 16px;" onclick="handleLogoutWhatsApp()">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Disconnect / Log Out
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeQrModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Add / Edit Auto-Reply Rule -->
+    <div class="modal-overlay" id="ruleModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="ruleModalTitle"><i class="fa-solid fa-robot" style="color: var(--accent-lime);"></i> Automated Response Rule</h3>
+                <button class="btn-close-modal" onclick="closeRuleModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleSaveRule(event)">
+                <input type="hidden" id="editRuleId">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Rule Name:</label>
+                        <input type="text" id="ruleNameInput" class="form-control" placeholder="e.g. Catalog & Pricing Inquiry" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Keywords (comma separated):</label>
+                        <input type="text" id="ruleKeywordsInput" class="form-control" placeholder="catalog, price, lookbook, dresses, suits" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Auto-Response Text:</label>
+                        <textarea id="ruleReplyTextInput" class="form-control" rows="5" placeholder="Hello! Welcome to ELEVATESTORE..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeRuleModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Rule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Add Single Contact -->
+    <div class="modal-overlay" id="addContactModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-plus" style="color: var(--accent-lime);"></i> Add New Client Lead</h3>
+                <button class="btn-close-modal" onclick="closeAddContactModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleAddSingleContact(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Client Name:</label>
+                        <input type="text" id="newContactName" class="form-control" placeholder="e.g. Vanessa Miller" required>
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp Phone Number:</label>
+                        <input type="text" id="newContactPhone" class="form-control" placeholder="e.g. 0754123456 or 255754123456" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeAddContactModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Lead</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Edit Active Contact Details -->
+    <div class="modal-overlay" id="editContactModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-pen-to-square" style="color: var(--accent-lime);"></i> Edit Client Contact</h3>
+                <button class="btn-close-modal" onclick="closeEditActiveContactModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleSaveActiveContactDetails(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Client Name (as saved on your phone):</label>
+                        <input type="text" id="editActiveContactName" class="form-control" placeholder="e.g. Poshi" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tanzanian Phone Number (e.g. 07XXXXXXXX or 255XXXXXXXXX):</label>
+                        <input type="text" id="editActiveContactPhone" class="form-control" placeholder="e.g. 0754123456">
+                        <small style="color: var(--text-muted); font-size: 0.72rem;">Attach the real phone number here to easily recognize this contact.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeEditActiveContactModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+    <audio id="notificationSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+    <script src="js/app.js?v=8"></script>
+</body>
+</html>

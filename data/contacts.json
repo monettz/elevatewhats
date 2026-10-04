@@ -1,0 +1,22 @@
+[
+  {
+    "jid": "255711472706@s.whatsapp.net",
+    "phone": "255711472706",
+    "name": "Valued Client",
+    "source": "Phone Sync",
+    "createdAt": "2026-10-03T10:44:15.835Z",
+    "updatedAt": "2026-10-03T22:54:56.765Z",
+    "lastCampaign": "New Signature Arrivals & Lookbook",
+    "status": "contacted"
+  },
+  {
+    "jid": "194089907671191@lid",
+    "phone": "255621039927",
+    "name": "Poshi😉",
+    "source": "WhatsApp Inquiry",
+    "createdAt": "2026-10-03T10:35:23.149Z",
+    "updatedAt": "2026-10-03T10:45:00.000Z",
+    "lastMessage": "umenielewa",
+    "status": "replied"
+  }
+]

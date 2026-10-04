@@ -1,0 +1,72 @@
+[
+  {
+    "id": "rule-welcome",
+    "name": "Welcome Greeting (Salamu)",
+    "keywords": [
+      "habari",
+      "mambo",
+      "vip",
+      "hello",
+      "hi",
+      "hey",
+      "niaje",
+      "salaam"
+    ],
+    "matchType": "contains",
+    "replyText": "Habari! 👋 Karibu sana *ELEVATESTORE* - Nyumba ya Mitindo na Nguo Bora za Kisasa. ✨\n\nJe, ungependa kupata huduma gani leo?\n1️⃣ Kuona *Catalogue / Nguo Mpya* (Andika *CATALOGUE*)\n2️⃣ Kuulizia *Bei na Saizi* (Andika *BEI*)\n3️⃣ *Mahali Duka Lilipo / Location* (Andika *LOCATION*)\n4️⃣ Kuongea na *Mhudumu* (Andika *HUDUMA*)\n\nTupo tayari kukuhudumia kwa viwango vya juu! 🛍️",
+    "enabled": false,
+    "mediaUrl": null
+  },
+  {
+    "id": "rule-location",
+    "name": "Duka Lilipo (Location)",
+    "keywords": [
+      "location",
+      "wapi",
+      "duka lilipo",
+      "sehemu",
+      "mko wapi",
+      "ofisi"
+    ],
+    "matchType": "contains",
+    "replyText": "📍 *ELEVATESTORE - Mahali Tulipo:*\n\nDuka letu linapatikana maeneo rahisi kufikika. Tunafanya pia *DELIVERY* mikoani na ndani ya jiji kwa haraka na uaminifu mkubwa! 🚚\n\n📞 Simu/WhatsApp ya Dukani: +255 7XX XXX XXX\n🕒 Muda wa Kazi: Jumatatu - Jumamosi (Saa 2:30 Asubuhi - 2:00 Usiku)\n\nJe, ungependa uletewe mzigo au utatutembelea dukani?",
+    "enabled": false,
+    "mediaUrl": null
+  },
+  {
+    "id": "rule-catalogue",
+    "name": "Catalogue / Bei na Nguo Mpya",
+    "keywords": [
+      "catalogue",
+      "katalogi",
+      "nguo",
+      "mzigo mpya",
+      "bei",
+      "picha",
+      "price",
+      "gauni",
+      "shati",
+      "suruali"
+    ],
+    "matchType": "contains",
+    "replyText": "✨ *ELEVATESTORE - Mkusanyiko wa Nguo Zetu:*\n\nTuna nguo kali za kike na za kiume (Quality Guaranteed):\n👗 Magauni ya Kifahari & Casual\n👔 Mashati & T-Shirts za Brand\n👖 Suruali, Jeans & Cargo\n👠 Viatu & Accessories\n\nMhudumu wetu anakuwekea picha za mikusanyiko mipya hivi punde! Au tuambie aina ya nguo unayotafuta leo. 👇",
+    "enabled": false,
+    "mediaUrl": null
+  },
+  {
+    "id": "rule-human",
+    "name": "Kuongea na Mhudumu (Customer Support)",
+    "keywords": [
+      "huduma",
+      "mhudumu",
+      "ongea",
+      "agent",
+      "support",
+      "help"
+    ],
+    "matchType": "contains",
+    "replyText": "Tafadhali subiri kidogo, *Mhudumu wa ELEVATESTORE* anakuja hewani kukuhudumia sasa hivi. 💬 Asante kwa subira yako!",
+    "enabled": false,
+    "mediaUrl": null
+  }
+]

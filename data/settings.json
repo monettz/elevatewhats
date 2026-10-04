@@ -1,0 +1,10 @@
+{
+  "storeName": "ELEVATESTORE",
+  "phone": "",
+  "minDelaySeconds": 15,
+  "maxDelaySeconds": 40,
+  "batchSize": 20,
+  "batchPauseMinutes": 2,
+  "autoReplyEnabled": true,
+  "soundNotifications": true
+}
