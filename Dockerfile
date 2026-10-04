@@ -1,36 +1,38 @@
-# Use official Node.js LTS Debian-slim image
-FROM node:20-bullseye-slim
+# Use stable Node.js 20 Debian image
+FROM node:20-bookworm-slim
 
-# Install system dependencies required for native modules and media handling
+# Set working directory
+WORKDIR /app
+
+# Install system utilities needed for native compilation and media processing
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     make \
     g++ \
     git \
     ffmpeg \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
-WORKDIR /app
-
-# Copy package files first for Docker layer caching
+# Copy package manifests
 COPY package*.json ./
 
 # Install production dependencies
-RUN npm install --omit=dev
+RUN npm install --omit=dev --no-audit --no-fund
 
-# Copy application source code
+# Copy source code
 COPY . .
 
-# Ensure data directories exist
+# Ensure data runtime directories exist
 RUN mkdir -p data/sessions data/uploads
 
-# Expose default port
+# Expose port
 EXPOSE 3000
 
-# Set environment variables
+# Environment setup
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Start command
-CMD ["npm", "start"]
+# Start server directly
+CMD ["node", "server.js"]
+
