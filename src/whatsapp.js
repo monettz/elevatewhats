@@ -13,6 +13,14 @@ const fs = require('fs');
 const { EventEmitter } = require('events');
 const storage = require('./storage');
 
+// Resolve after `ms` even if the promise never settles (prevents hung presence calls)
+function withTimeout(promise, ms = 3000) {
+    return Promise.race([
+        Promise.resolve(promise).catch(() => {}),
+        new Promise(resolve => setTimeout(resolve, ms))
+    ]);
+}
+
 class WhatsAppManager extends EventEmitter {
     constructor() {
         super();
@@ -283,7 +291,10 @@ class WhatsAppManager extends EventEmitter {
     async sendPresence(jid, presence = 'composing') {
         try {
             if (this.sock && this.connectionStatus === 'connected') {
-                await this.sock.sendPresenceUpdate(presence, jid);
+                if (jid) {
+                    await withTimeout(this.sock.presenceSubscribe(jid));
+                }
+                await withTimeout(this.sock.sendPresenceUpdate(presence, jid));
             }
         } catch (e) {
             // Non-critical
@@ -291,25 +302,39 @@ class WhatsAppManager extends EventEmitter {
     }
 
     async simulateTyping(jid, textOrDuration = 2500) {
-        if (!this.sock || this.connectionStatus !== 'connected') return;
-        try {
-            let durationMs = 2500;
-            if (typeof textOrDuration === 'number') {
-                durationMs = textOrDuration;
-            } else if (typeof textOrDuration === 'string') {
-                const settings = storage.getSettings();
-                const charsPerSec = Number(settings.typingSpeedCharsPerSec) || 35;
-                const calculated = (textOrDuration.length / charsPerSec) * 1000;
-                const jitter = (Math.random() * 0.4 - 0.2) * calculated;
-                durationMs = Math.max(1200, Math.min(6000, Math.round(calculated + jitter)));
-            }
+        let durationMs = 2500;
+        if (typeof textOrDuration === 'number') {
+            durationMs = textOrDuration;
+        } else if (typeof textOrDuration === 'string') {
+            const settings = storage.getSettings();
+            const charsPerSec = Number(settings.typingSpeedCharsPerSec) || 35;
+            const calculated = (textOrDuration.length / Math.max(charsPerSec, 1)) * 1000;
+            const jitter = (Math.random() * 0.4 - 0.2) * calculated;
+            durationMs = Math.max(1200, Math.min(6000, Math.round(calculated + jitter)));
+        }
 
-            await this.sock.sendPresenceUpdate('available');
-            await this.sock.sendPresenceUpdate('composing', jid);
-            await delay(durationMs);
-            await this.sock.sendPresenceUpdate('paused', jid);
-        } catch (e) {
-            // Non-critical presence handling
+        // Send composing state to WhatsApp if connected
+        if (this.sock && this.connectionStatus === 'connected') {
+            try {
+                if (jid) {
+                    await withTimeout(this.sock.presenceSubscribe(jid));
+                }
+                await withTimeout(this.sock.sendPresenceUpdate('composing', jid));
+            } catch (e) {
+                // Ignore presence update error
+            }
+        }
+
+        // Always guarantee the human typing simulation delay
+        await new Promise(resolve => setTimeout(resolve, durationMs));
+
+        // Reset presence state
+        if (this.sock && this.connectionStatus === 'connected') {
+            try {
+                await withTimeout(this.sock.sendPresenceUpdate('paused', jid));
+            } catch (e) {
+                // Ignore
+            }
         }
     }
 
